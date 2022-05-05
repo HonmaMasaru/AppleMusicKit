@@ -14,7 +14,7 @@ struct SongResponse: Codable {
 	let data: [Song]
 
     // MARK: -
-    
+
     /// IDの取得
     var ids: [String] {
         data.map { $0.id }
