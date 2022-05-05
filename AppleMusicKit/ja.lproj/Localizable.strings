@@ -8,6 +8,7 @@
 "Response error (%d)" = "不正なレスポンス (%d)";
 "Can't get token" = "トークンが取得できない";
 "Not autholized" = "認証されていない";
+"Can't get the song" = "曲が取得できない";
 "Can't get the artwork" = "アートワークが取得できない";
 "Failure to set the rating" = "レーティングの設定に失敗する";
 "Unknown error" = "不明なエラー";

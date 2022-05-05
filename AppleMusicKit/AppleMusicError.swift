@@ -18,6 +18,9 @@ public enum AppleMusicError: LocalizedError {
     /// 認証されていない
 	case notAutholized
 
+    /// 曲が取得できない
+    case cantGetTheSong
+
     /// アートワークが取得できない
     case cantGetTheArtwork
 
@@ -38,6 +41,8 @@ public enum AppleMusicError: LocalizedError {
             return NSLocalizedString("Can't get token", comment: "")
         case .notAutholized:
             return NSLocalizedString("Not autholized", comment: "")
+        case .cantGetTheSong:
+            return NSLocalizedString("Can't get song", comment: "")
         case .cantGetTheArtwork:
             return NSLocalizedString("Can't get the artwork", comment: "")
         case .failureToSetTheRating:

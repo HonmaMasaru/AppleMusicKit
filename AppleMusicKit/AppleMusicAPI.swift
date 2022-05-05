@@ -8,7 +8,6 @@
 import UIKit
 
 public struct AppleMusicAPI {
-
     /// デベロッパートークン
     public let developerToken: String
 
@@ -41,74 +40,51 @@ public struct AppleMusicAPI {
     /// 曲データの検索
     /// - Parameters:
     ///   - storeIDs: 曲ID
-    ///   - completion: 結果
-	public func searchSongs(storeIDs: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+    /// - Returns: 曲ID (Apple MusicにあるID)
+	public func searchSongs(storeIDs: [String]) async throws -> [String] {
         let ids = storeIDs.joined(separator: ",")
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/songs?ids=\(ids)") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .get, headers: headers)
-		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
-				let song = try JSONDecoder().decode(SongResponse.self, from: data!)
-                completion(.success(song.ids))
-			} catch {
-				completion(.failure(error))
-			}
-		}
-		task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let song = try JSONDecoder().decode(SongResponse.self, from: data)
+        return song.ids
 	}
 
     /// 曲データの取得
     /// - Parameters:
     ///   - storeIDs: 曲ID
-    ///   - completion: 結果
-	public func getSongData(storeID: String, completion: @escaping (Result<Song, Error>) -> Void) {
+    /// - Returns: 曲
+    public func getSongData(storeID: String) async throws -> Song {
 		guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/songs/\(storeID)") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .get, headers: headers)
-		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
-				let songs = try JSONDecoder().decode(SongResponse.self, from: data!)
-                completion(.success(songs.data[0]))
-			} catch {
-				completion(.failure(error))
-			}
-		}
-		task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let songs = try JSONDecoder().decode(SongResponse.self, from: data)
+        guard let song = songs.data.first else { throw AppleMusicError.cantGetTheSong }
+        return song
 	}
 
     // MARK: - Storefront
 
     /// ストアフロントの取得
-    /// - Parameter completion: 結果
-    public func getAllStorefronts(completion: @escaping (Result<[Storefront], Error>) -> Void) {
+    /// - Returns: ストアフロントID
+    public func getAllStorefronts() async throws -> [Storefront] {
         guard let url = URL(string: "https://api.music.apple.com/v1/storefronts") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .get, headers: headers)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
-                let storeFronts = try JSONDecoder().decode(StorefrontResponse.self, from: data!)
-                completion(.success(storeFronts.data))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let storeFronts = try JSONDecoder().decode(StorefrontResponse.self, from: data)
+        return storeFronts.data
     }
 
     // MARK: - Charts
@@ -117,53 +93,34 @@ public struct AppleMusicAPI {
     /// - Parameters:
     ///   - storefront: ストアの言語
     ///   - limit: 取得件数
-    ///   - completion: 結果
-    public func getCharts(storefront: String = "jp", limit: Int = 20, completion: @escaping (Result<[String], Error>) -> Void) {
+    /// - Returns: 曲ID
+    public func getCharts(storefront: String = "jp", limit: Int = 20) async throws -> [String] {
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/charts?types=songs&limit=\(limit)") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .get, headers: headers)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
-                let chart = try JSONDecoder().decode(ChartResponse.self, from: data!)
-                completion(.success(chart.ids))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let chart = try JSONDecoder().decode(ChartResponse.self, from: data)
+        return chart.ids
     }
 
 	// MARK: - Recommendations
 
 	/// レコメンデーションのプレイリストIDの取得
-    /// - Parameter completion: 結果
-	public func getRecommendedPlaylists(completion: @escaping (Result<[String], Error>) -> Void) {
-		guard !userToken.isEmpty else {
-            completion(.failure(AppleMusicError.noUserToken))
-            return
-        }
+    /// - Returns: プレイリストID (複数)
+    public func getRecommendedPlaylists() async throws -> [String] {
+        guard !userToken.isEmpty else { throw AppleMusicError.noUserToken }
 		guard let url = URL(string: "https://api.music.apple.com/v1/me/recommendations?type=playlists") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
 		let request = URLRequest(url: url, method: .get, headers: headers)
-		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
-				let recommend = try JSONDecoder().decode(RecommendationsResponse.self, from: data!)
-                completion(.success(recommend.ids))
-			} catch {
-				completion(.failure(error))
-			}
-		}
-		task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let recommend = try JSONDecoder().decode(RecommendationsResponse.self, from: data)
+        return recommend.ids
 	}
 
 	// MARK: - Rating
@@ -171,109 +128,69 @@ public struct AppleMusicAPI {
     /// レーティングの取得
     /// - Parameters:
     ///   - storeID: 曲ID
-    ///   - completion: 結果
-	public func getRating(storeID: String, completion: @escaping (Result<Rating, Error>) -> Void) {
-        guard !userToken.isEmpty else {
-            completion(.failure(AppleMusicError.noUserToken))
-            return
-        }
+    /// - Returns: 結果レーティング
+	public func getRating(storeID: String) async throws -> Rating {
+        guard !userToken.isEmpty else { throw AppleMusicError.noUserToken }
 		guard let url = URL(string: "https://api.music.apple.com/v1/me/ratings/songs/\(storeID)") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .get, headers: headers)
-		let task = URLSession.shared.dataTask(with: request) { data, response, error in
-			do {
-                guard error == nil else { throw error! }
-                guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
-                if case 200 = res.statusCode, data != nil {
-					let rating = try JSONDecoder().decode(RatingResponse.self, from: data!)
-					completion(.success(rating.data[0].attributes.value))
-                } else if case 404 = res.statusCode {
-					completion(.success(.neutral))
-                } else {
-                    throw URLError(.badServerResponse)
-				}
-			} catch {
-				completion(.failure(error))
-			}
-		}
-		task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        switch res.statusCode {
+        case 200:
+            let rating = try JSONDecoder().decode(RatingResponse.self, from: data)
+            return rating.data.first?.attributes.value ?? .neutral
+        case 404:
+            return .neutral
+        default:
+            throw URLError(.badServerResponse)
+        }
 	}
 
     /// レーティングを設定
     /// - Parameters:
     ///   - rating: レーティング
     ///   - storeID: 曲ID
-    ///   - completion: 結果
-	public func set(rating: Rating, storeID: String, completion: @escaping (Result<Rating, Error>) -> Void) {
-        guard !userToken.isEmpty else {
-            completion(.failure(AppleMusicError.noUserToken))
-            return
+    /// - Returns: 結果レーティング
+    public func set(rating: Rating, storeID: String) async throws -> Rating {
+        guard !userToken.isEmpty else { throw AppleMusicError.noUserToken }
+		try await deleteRating(storeID: storeID)
+        if rating == .like || rating == .dislike {
+            return try await put(rating: rating, storeID: storeID)
         }
-		deleteRating(storeID: storeID) { error in
-            guard error == nil else {
-                completion(.failure(error!))
-                return
-            }
-            switch rating {
-            case .like:
-                self.put(rating: .like, storeID: storeID, completion: completion)
-            case .dislike:
-                self.put(rating: .dislike, storeID: storeID, completion: completion)
-            case .neutral:
-                completion(.success(.neutral))
-            }
-		}
+        return .neutral
 	}
 
     /// レーティングを送信
     /// - Parameters:
     ///   - rating: レーティング
     ///   - storeID: 曲ID
-    ///   - completion: 結果
-    private func put(rating: Rating, storeID: String, completion: @escaping (Result<Rating, Error>) -> Void) {
+    /// - Returns: 結果レーティング
+    private func put(rating: Rating, storeID: String) async throws -> Rating {
         guard let url = URL(string: "https://api.music.apple.com/v1/me/ratings/songs/\(storeID)") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let body = #"{"type":"rating","attributes":{"value":\#(rating.rawValue)}}"#
         let request = URLRequest(url: url, method: .put, headers: headers, body: body.data(using: .utf8))
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            do {
-                guard error == nil else { throw error! }
-                guard let res = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
-                let rating = try JSONDecoder().decode(RatingResponse.self, from: data!)
-                completion(.success(rating.data[0].attributes.value))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let rating = try JSONDecoder().decode(RatingResponse.self, from: data)
+        return rating.data.first?.attributes.value ?? .neutral
 	}
 
     /// レーティングの削除
     /// - Parameters:
     ///   - storeID: 曲ID
-    ///   - completion: 結果
-    private func deleteRating(storeID: String, completion: @escaping (Error?) -> Void) {
+    private func deleteRating(storeID: String) async throws {
 		guard let url = URL(string: "https://api.music.apple.com/v1/me/ratings/songs/\(storeID)") else {
-            completion(URLError(.badURL))
-            return
+            throw URLError(.badURL)
         }
 		let request = URLRequest(url: url, method: .delete, headers: headers)
-		let task = URLSession.shared.dataTask(with: request) { _, response, error in
-			do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 204 else { throw AppleMusicError.responseError(r.statusCode) }
-				completion(nil)
-			} catch {
-				completion(error)
-			}
-		}
-		task.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 204 else { throw AppleMusicError.responseError(res.statusCode) }
 	}
 
     // MARK: - Library
@@ -281,28 +198,15 @@ public struct AppleMusicAPI {
     /// ライブラリーに曲を追加
     /// - Parameters:
     ///   - storeID: 曲ID
-    ///   - completion: 結果
-    public func addSongToLibrary(storeID: String, completion: @escaping (Error?) -> Void) {
-        guard !userToken.isEmpty else {
-            completion(AppleMusicError.noUserToken)
-            return
-        }
+    public func addSongToLibrary(storeID: String) async throws {
+        guard !userToken.isEmpty else { throw AppleMusicError.noUserToken }
         guard let url = URL(string: "https://api.music.apple.com/v1/me/library?ids[songs]=\(storeID)") else {
-            completion(URLError(.badURL))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .post, headers: headers)
-        let task = URLSession.shared.dataTask(with: request) { _, response, error in
-            do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 202 else { throw AppleMusicError.responseError(r.statusCode) }
-                completion(nil)
-            } catch {
-                completion(error)
-            }
-        }
-        task.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 202 else { throw AppleMusicError.responseError(res.statusCode) }
     }
 
     // MARK: - Playlist
@@ -311,55 +215,34 @@ public struct AppleMusicAPI {
     /// - Parameters:
     ///   - name: プレイリスト名
     ///   - storeID: 曲ID (複数)
-    ///   - completion: 結果
-    public func createNewPlaylist(name: String, storeIDs: [String], completion: @escaping (Error?) -> Void) {
-        guard !userToken.isEmpty else {
-            completion(AppleMusicError.noUserToken)
-            return
-        }
+    public func createNewPlaylist(name: String, storeIDs: [String]) async throws {
+        guard !userToken.isEmpty else { throw AppleMusicError.noUserToken }
         guard let url = URL(string: "https://api.music.apple.com/v1/me/library/playlists") else {
-            completion(URLError(.badURL))
-            return
+            throw URLError(.badURL)
         }
         let storeIDs = storeIDs.map { #"{"id":"\#($0)","type":"songs"}"# }.joined(separator: ",")
         let body = #"{"attributes":{"name":"\#(name)"},"relationships":{"tracks":{"data":[\#(storeIDs)]}}}"#
         let request = URLRequest(url: url, method: .post, headers: headers, body: body.data(using: .utf8))
-        let task = URLSession.shared.dataTask(with: request) { _, response, error in
-            do {
-                guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 201 else { throw AppleMusicError.responseError(r.statusCode) }
-                completion(nil)
-            } catch {
-                completion(error)
-            }
-        }
-        task.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 201 else { throw AppleMusicError.responseError(res.statusCode) }
     }
 
     /// プレイリストから曲の取得
     /// - Parameters:
     ///   - playlistIDs: プレイリストID (複数)
-    ///   - completion: 結果
-    public func getSongsFromPlaylists(playlistIDs: [String], completion: @escaping (Result<[String], Error>) -> Void) {
+    /// - Returns: 曲ID (複数)
+    public func getSongsFromPlaylists(playlistIDs: [String]) async throws -> [String] {
         let ids = playlistIDs.prefix(25).joined(separator: ",")
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/playlists?ids=\(ids)") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
         let request = URLRequest(url: url, method: .get, headers: headers)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            do {
-                guard error == nil else { throw error! }
-                guard let res = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
-                let playlists = try JSONDecoder().decode(PlaylistResponse.self, from: data!)
-                completion(.success(playlists.ids))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-        task.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+        guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
+        let playlists = try JSONDecoder().decode(PlaylistResponse.self, from: data)
+        return playlists.ids
     }
 }
 
