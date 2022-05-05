@@ -7,14 +7,29 @@
 
 import Foundation
 
+/// エラー
 public enum AppleMusicError: LocalizedError {
+    /// 不正なレスポンス
     case responseError(Int)
+
+    /// トークンが取得できない
 	case noUserToken
+
+    /// 認証されていない
 	case notAutholized
+
+    /// アートワークが取得できない
     case cantGetTheArtwork
+
+    /// レーティングの設定に失敗する
     case failureToSetTheRating
+
+    /// 不明なエラー
     case unknown
 
+    // MARK: -
+
+    /// エラーコメント
     public var errorDescription: String? {
         switch self {
         case .responseError(let code):
