@@ -8,29 +8,40 @@
 import UIKit
 
 public struct AppleMusicAPI {
+
+    /// デベロッパートークン
     public let developerToken: String
+
+    /// ユーザートークン
     public var userToken: String = ""
+
+    /// ストアの言語
     public var storefront: String = "jp"
 
+    /// リクエストヘッダ
     private var headers: [String: String?] {
         ["Authorization": "Bearer \(developerToken)", "Music-User-Token": userToken]
     }
 
-	/*----------------------------------------------------*/
-	// MARK: - Init
-	/*----------------------------------------------------*/
+    // MARK: - Init
 
+    /// 初期化
+    /// - Parameters:
+    ///   - developerToken: デベロッパートークン
+    ///   - userToken: ユーザートークン
+    ///   - storefront: ストアの言語
     public init(developerToken: String, userToken: String, storefront: String) {
         self.developerToken = developerToken
         self.userToken = userToken
         self.storefront = storefront
     }
 
-	/*----------------------------------------------------*/
 	// MARK: - Song Data
-	/*----------------------------------------------------*/
 
-	// 曲データの検索
+    /// 曲データの検索
+    /// - Parameters:
+    ///   - storeIDs: 曲ID
+    ///   - completion: 結果
 	public func searchSongs(storeIDs: [String], completion: @escaping (Result<[String], Error>) -> Void) {
         let ids = storeIDs.joined(separator: ",")
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/songs?ids=\(ids)") else {
@@ -52,7 +63,10 @@ public struct AppleMusicAPI {
 		task.resume()
 	}
 
-	// 曲データの取得
+    /// 曲データの取得
+    /// - Parameters:
+    ///   - storeIDs: 曲ID
+    ///   - completion: 結果
 	public func getSongData(storeID: String, completion: @escaping (Result<Song, Error>) -> Void) {
 		guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/songs/\(storeID)") else {
             completion(.failure(URLError(.badURL)))
@@ -73,11 +87,10 @@ public struct AppleMusicAPI {
 		task.resume()
 	}
 
-    /*----------------------------------------------------*/
     // MARK: - Storefront
-    /*----------------------------------------------------*/
 
-    // ストアフロントの取得
+    /// ストアフロントの取得
+    /// - Parameter completion: 結果
     public func getAllStorefronts(completion: @escaping (Result<[Storefront], Error>) -> Void) {
         guard let url = URL(string: "https://api.music.apple.com/v1/storefronts") else {
             completion(.failure(URLError(.badURL)))
@@ -98,11 +111,13 @@ public struct AppleMusicAPI {
         task.resume()
     }
 
-    /*----------------------------------------------------*/
     // MARK: - Charts
-    /*----------------------------------------------------*/
 
-    // チャートを取得
+    /// チャートを取得
+    /// - Parameters:
+    ///   - storefront: ストアの言語
+    ///   - limit: 取得件数
+    ///   - completion: 結果
     public func getCharts(storefront: String = "jp", limit: Int = 20, completion: @escaping (Result<[String], Error>) -> Void) {
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/charts?types=songs&limit=\(limit)") else {
             completion(.failure(URLError(.badURL)))
@@ -123,11 +138,10 @@ public struct AppleMusicAPI {
         task.resume()
     }
 
-	/*----------------------------------------------------*/
 	// MARK: - Recommendations
-	/*----------------------------------------------------*/
 
-	// レコメンデーションのプレイリストIDの取得
+	/// レコメンデーションのプレイリストIDの取得
+    /// - Parameter completion: 結果
 	public func getRecommendedPlaylists(completion: @escaping (Result<[String], Error>) -> Void) {
 		guard !userToken.isEmpty else {
             completion(.failure(AppleMusicError.noUserToken))
@@ -156,7 +170,10 @@ public struct AppleMusicAPI {
 	// MARK: - Rating
 	/*----------------------------------------------------*/
 
-	// レーティングの取得
+    /// レーティングの取得
+    /// - Parameters:
+    ///   - storeID: 曲ID
+    ///   - completion: 結果
 	public func getRating(storeID: String, completion: @escaping (Result<Rating, Error>) -> Void) {
         guard !userToken.isEmpty else {
             completion(.failure(AppleMusicError.noUserToken))
@@ -170,11 +187,11 @@ public struct AppleMusicAPI {
 		let task = URLSession.shared.dataTask(with: request) { data, response, error in
 			do {
                 guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
-                if case 200 = r.statusCode, data != nil {
+                guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
+                if case 200 = res.statusCode, data != nil {
 					let rating = try JSONDecoder().decode(RatingResponse.self, from: data!)
 					completion(.success(rating.data[0].attributes.value))
-                } else if case 404 = r.statusCode {
+                } else if case 404 = res.statusCode {
 					completion(.success(.neutral))
                 } else {
                     throw URLError(.badServerResponse)
@@ -186,7 +203,11 @@ public struct AppleMusicAPI {
 		task.resume()
 	}
 
-	// レーティングを設定
+    /// レーティングを設定
+    /// - Parameters:
+    ///   - rating: レーティング
+    ///   - storeID: 曲ID
+    ///   - completion: 結果
 	public func set(rating: Rating, storeID: String, completion: @escaping (Result<Rating, Error>) -> Void) {
         guard !userToken.isEmpty else {
             completion(.failure(AppleMusicError.noUserToken))
@@ -208,7 +229,11 @@ public struct AppleMusicAPI {
 		}
 	}
 
-	// レーティングを送信
+    /// レーティングを送信
+    /// - Parameters:
+    ///   - rating: レーティング
+    ///   - storeID: 曲ID
+    ///   - completion: 結果
     private func put(rating: Rating, storeID: String, completion: @escaping (Result<Rating, Error>) -> Void) {
         guard let url = URL(string: "https://api.music.apple.com/v1/me/ratings/songs/\(storeID)") else {
             completion(.failure(URLError(.badURL)))
@@ -219,8 +244,8 @@ public struct AppleMusicAPI {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             do {
                 guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
+                guard let res = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
+                guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
                 let rating = try JSONDecoder().decode(RatingResponse.self, from: data!)
                 completion(.success(rating.data[0].attributes.value))
             } catch {
@@ -230,7 +255,10 @@ public struct AppleMusicAPI {
         task.resume()
 	}
 
-	// レーティングの削除
+    /// レーティングの削除
+    /// - Parameters:
+    ///   - storeID: 曲ID
+    ///   - completion: 結果
     private func deleteRating(storeID: String, completion: @escaping (Error?) -> Void) {
 		guard let url = URL(string: "https://api.music.apple.com/v1/me/ratings/songs/\(storeID)") else {
             completion(URLError(.badURL))
@@ -250,11 +278,12 @@ public struct AppleMusicAPI {
 		task.resume()
 	}
 
-    /*----------------------------------------------------*/
     // MARK: - Library
-    /*----------------------------------------------------*/
 
-    // ライブラリーに曲を追加
+    /// ライブラリーに曲を追加
+    /// - Parameters:
+    ///   - storeID: 曲ID
+    ///   - completion: 結果
     public func addSongToLibrary(storeID: String, completion: @escaping (Error?) -> Void) {
         guard !userToken.isEmpty else {
             completion(AppleMusicError.noUserToken)
@@ -278,11 +307,13 @@ public struct AppleMusicAPI {
         task.resume()
     }
 
-    /*----------------------------------------------------*/
     // MARK: - Playlist
-    /*----------------------------------------------------*/
 
-    // プレイリストの作成
+    /// プレイリストの作成
+    /// - Parameters:
+    ///   - name: プレイリスト名
+    ///   - storeID: 曲ID (複数)
+    ///   - completion: 結果
     public func createNewPlaylist(name: String, storeIDs: [String], completion: @escaping (Error?) -> Void) {
         guard !userToken.isEmpty else {
             completion(AppleMusicError.noUserToken)
@@ -308,7 +339,10 @@ public struct AppleMusicAPI {
         task.resume()
     }
 
-    // プレイリストから曲の取得
+    /// プレイリストから曲の取得
+    /// - Parameters:
+    ///   - playlistIDs: プレイリストID (複数)
+    ///   - completion: 結果
     public func getSongsFromPlaylists(playlistIDs: [String], completion: @escaping (Result<[String], Error>) -> Void) {
         let ids = playlistIDs.prefix(25).joined(separator: ",")
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/playlists?ids=\(ids)") else {
@@ -319,8 +353,8 @@ public struct AppleMusicAPI {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             do {
                 guard error == nil else { throw error! }
-                guard let r = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
-                guard r.statusCode == 200 else { throw AppleMusicError.responseError(r.statusCode) }
+                guard let res = response as? HTTPURLResponse, data != nil else { throw URLError(.badServerResponse) }
+                guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
                 let playlists = try JSONDecoder().decode(PlaylistResponse.self, from: data!)
                 completion(.success(playlists.ids))
             } catch {
@@ -334,6 +368,7 @@ public struct AppleMusicAPI {
 // MARK: -
 
 private extension URLRequest {
+    /// メソッド
     enum Method: String {
         case get = "GET"
         case post = "POST"
@@ -341,6 +376,12 @@ private extension URLRequest {
         case delete = "DELETE"
     }
 
+    /// 初期化
+    /// - Parameters:
+    ///   - url: URL
+    ///   - method: メソッド
+    ///   - headers: ヘッダ
+    ///   - body: ボディー
     init(url: URL, method: Method, headers: [String: String?]? = nil, body: Data? = nil) {
         self.init(url: url)
         httpMethod = method.rawValue

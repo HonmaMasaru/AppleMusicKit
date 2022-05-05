@@ -1,0 +1,9 @@
+disabled_rules:
+    - identifier_name
+    - type_body_length
+    - function_body_length
+    - line_length
+    - file_length
+type_name:
+    excluded:
+        - ID #Identifiable

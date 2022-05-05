@@ -7,24 +7,46 @@
 
 import Foundation
 
+/// チャートのレスポンス
+/// https://developer.apple.com/documentation/applemusicapi/chartresponse
 struct ChartResponse: Codable {
+    /// 問い合わせ結果
     let results: Results
 
+    /// 結果データ
+    /// https://developer.apple.com/documentation/applemusicapi/chartresponse/results
+    struct Results: Codable {
+        /// 曲データ
+        let songs: [Chart]
+    }
+
+    // MARK: -
+
+    /// IDの取得
     var ids: [String] {
         results.songs.reduce(into: [String]()) {
             $0 += $1.data.map { $0.id }
         }
     }
-
-    struct Results: Codable {
-        let songs: [Chart]
-    }
 }
 
+// MARK: -
+
+/// チャート (曲)
+/// https://developer.apple.com/documentation/applemusicapi/chartresponse/results/songschart
 struct Chart: Codable {
+    /// チャート名
     let chart: String
+
+    /// 曲のデータ
     let data: [Song]
-    let href: String
+
+    /// チャートデータのURL
+    let href: String?
+
+    /// チャート名 (ローカライズ)
     let name: String
+
+    /// 次の検索結果
     let next: String
 }
