@@ -39,9 +39,10 @@ public struct AppleMusicAPI {
     // MARK: - Song Data
 
     /// 曲データの検索
+    /// - Note: [Get a Catalog Song | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_a_catalog_song)
     /// - Parameters:
-    ///   - storeIDs: 曲ID
-    ///   - completion: 結果
+    ///   - storeIDs: 曲ID (リスト)
+    ///   - completion: 存在する曲IDリスト
     public func searchSongs(storeIDs: [String], completion: @escaping (Result<[String], Error>) -> Void) {
         let ids = storeIDs.joined(separator: ",")
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/songs?ids=\(ids)") else {
@@ -64,6 +65,7 @@ public struct AppleMusicAPI {
     }
 
     /// 曲データの取得
+    /// - Note: [Get a Catalog Song | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_a_catalog_song)
     /// - Parameters:
     ///   - storeIDs: 曲ID
     ///   - completion: 結果
@@ -90,6 +92,7 @@ public struct AppleMusicAPI {
     // MARK: - Storefront
 
     /// ストアフロントの取得
+    /// - Note: [Get a User's Storefront | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_a_user_s_storefront)
     /// - Parameter completion: 結果
     public func getAllStorefronts(completion: @escaping (Result<[Storefront], Error>) -> Void) {
         guard let url = URL(string: "https://api.music.apple.com/v1/storefronts") else {
@@ -114,6 +117,7 @@ public struct AppleMusicAPI {
     // MARK: - Charts
 
     /// チャートを取得
+    /// - Note: [Get Catalog Charts | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_catalog_charts)
     /// - Parameters:
     ///   - storefront: ストアの言語
     ///   - limit: 取得件数
@@ -141,6 +145,7 @@ public struct AppleMusicAPI {
     // MARK: - Recommendations
 
     /// レコメンデーションのプレイリストIDの取得
+    /// - Note: [Get a Recommendation | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_a_recommendation)
     /// - Parameter completion: 結果
     public func getRecommendedPlaylists(completion: @escaping (Result<[String], Error>) -> Void) {
         guard !userToken.isEmpty else {
@@ -169,6 +174,7 @@ public struct AppleMusicAPI {
     // MARK: - Rating
 
     /// レーティングの取得
+    /// - Note: [Get a Personal Song Rating | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_a_personal_song_rating)
     /// - Parameters:
     ///   - storeID: 曲ID
     ///   - completion: 結果
@@ -228,6 +234,7 @@ public struct AppleMusicAPI {
     }
 
     /// レーティングを送信
+    /// - Note: [Add a Personal Song Rating | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/add_a_personal_song_rating)
     /// - Parameters:
     ///   - rating: レーティング
     ///   - storeID: 曲ID
@@ -254,6 +261,7 @@ public struct AppleMusicAPI {
     }
 
     /// レーティングの削除
+    /// - Note: [Delete a Personal Song Rating | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/delete_a_personal_song_rating)
     /// - Parameters:
     ///   - storeID: 曲ID
     ///   - completion: 結果
@@ -279,6 +287,7 @@ public struct AppleMusicAPI {
     // MARK: - Library
 
     /// ライブラリーに曲を追加
+    /// - Note: [Add a Resource to a Library | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/add_a_resource_to_a_library)
     /// - Parameters:
     ///   - storeID: 曲ID
     ///   - completion: 結果
@@ -308,6 +317,7 @@ public struct AppleMusicAPI {
     // MARK: - Playlist
 
     /// プレイリストの作成
+    /// - Note: [Create a New Library Playlist | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/create_a_new_library_playlist)
     /// - Parameters:
     ///   - name: プレイリスト名
     ///   - storeID: 曲ID (複数)
@@ -338,6 +348,7 @@ public struct AppleMusicAPI {
     }
 
     /// プレイリストから曲の取得
+    /// - Note: [Get a Catalog Playlist | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/get_a_catalog_playlist)
     /// - Parameters:
     ///   - playlistIDs: プレイリストID (複数)
     ///   - completion: 結果

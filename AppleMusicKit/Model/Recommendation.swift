@@ -8,7 +8,7 @@
 import Foundation
 
 /// レコメンドのレスポンス
-/// https://developer.apple.com/documentation/applemusicapi/personalrecommendationresponse
+/// - Note: [PersonalRecommendationResponse | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendationresponse)
 struct RecommendationsResponse: Codable {
     /// 問い合わせ結果
     let data: [Recommendation]
@@ -22,13 +22,13 @@ struct RecommendationsResponse: Codable {
 // MARK: -
 
 /// レコメンド
-/// https://developer.apple.com/documentation/applemusicapi/personalrecommendation
+/// - Note: [PersonalRecommendation | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendation)
 struct Recommendation: Codable {
     /// 関連項目
     let relationships: Relationships
 
     /// 関連項目
-    /// https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships
+    /// - Note: [PersonalRecommendation.Relationships | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships)
     struct Relationships: Codable {
         /// コンテンツ
         let contents: Contents?
@@ -38,14 +38,14 @@ struct Recommendation: Codable {
     }
 
     /// コンテンツ
-    /// https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships/personalrecommendationcontentsrelationship
+    /// - Note: [PersonalRecommendation.Relationships.PersonalRecommendationContentsRelationship | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships/personalrecommendationcontentsrelationship)
     struct Contents: Codable {
         /// リソース
         let data: [Resource]
     }
 
     /// リソース
-    /// https://developer.apple.com/documentation/applemusicapi/resource
+    /// - Note: [Resource | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/resource)
     struct Resource: Codable {
         /// ID
         let id: String

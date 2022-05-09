@@ -8,13 +8,13 @@
 import Foundation
 
 /// チャートのレスポンス
-/// https://developer.apple.com/documentation/applemusicapi/chartresponse
+/// - Note: [ChartResponse | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/chartresponse)
 struct ChartResponse: Codable {
     /// 問い合わせ結果
     let results: Results
 
     /// 結果データ
-    /// https://developer.apple.com/documentation/applemusicapi/chartresponse/results
+    /// - Note: [ChartResponse.Results | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/chartresponse/results)
     struct Results: Codable {
         /// 曲データ
         let songs: [Chart]
@@ -33,7 +33,7 @@ struct ChartResponse: Codable {
 // MARK: -
 
 /// チャート (曲)
-/// https://developer.apple.com/documentation/applemusicapi/chartresponse/results/songschart
+/// - Note: [ChartResponse.Results.SongsChart | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/chartresponse/results/songschart)
 struct Chart: Codable {
     /// チャート名
     let chart: String
