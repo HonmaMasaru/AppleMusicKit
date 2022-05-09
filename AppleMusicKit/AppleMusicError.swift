@@ -13,10 +13,10 @@ public enum AppleMusicError: LocalizedError {
     case responseError(Int)
 
     /// トークンが取得できない
-	case noUserToken
+    case noUserToken
 
     /// 認証されていない
-	case notAutholized
+    case notAutholized
 
     /// 曲が取得できない
     case cantGetTheSong
