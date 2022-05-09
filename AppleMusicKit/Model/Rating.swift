@@ -11,13 +11,13 @@ import Foundation
 /// https://developer.apple.com/documentation/applemusicapi/ratingsresponse
 struct RatingResponse: Codable {
     /// 問い合わせ結果
-	let data: [Data]
+    let data: [Data]
 
     /// レーティングデータ
-	struct Data: Codable {
-		let type: String
-		let attributes: Attributes
-	}
+    struct Data: Codable {
+        let type: String
+        let attributes: Attributes
+    }
 
     /// 属性
     /// https://developer.apple.com/documentation/applemusicapi/ratings/attributes

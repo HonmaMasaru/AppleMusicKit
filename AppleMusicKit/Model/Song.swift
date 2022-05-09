@@ -11,7 +11,7 @@ import Foundation
 /// https://developer.apple.com/documentation/applemusicapi/songsresponse
 struct SongResponse: Codable {
     /// 問い合わせ結果
-	let data: [Song]
+    let data: [Song]
 
     // MARK: -
 
@@ -27,14 +27,14 @@ struct SongResponse: Codable {
 /// https://developer.apple.com/documentation/applemusicapi/songs-um8
 public struct Song: Codable, Identifiable {
     /// ID
-	public let id: String
+    public let id: String
 
     /// 関連項目
-	public let attributes: Attributes
+    public let attributes: Attributes
 
     /// 関連項目
     /// https://developer.apple.com/documentation/applemusicapi/songs/attributes
-	public struct Attributes: Codable {
+    public struct Attributes: Codable {
         /// 曲名
         public let name: String
 
@@ -45,14 +45,14 @@ public struct Song: Codable, Identifiable {
         public let artistName: String
 
         /// URL
-		public let url: URL
+        public let url: URL
 
         /// アートワーク
-		public let artwork: Artwork
+        public let artwork: Artwork
 
         /// プレビュー
         public let previews: [Preview]
-	}
+    }
 
     /// アートワーク
     /// https://developer.apple.com/documentation/applemusicapi/artwork

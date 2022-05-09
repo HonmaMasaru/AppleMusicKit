@@ -11,7 +11,7 @@ import Foundation
 /// https://developer.apple.com/documentation/applemusicapi/playlistsresponse
 struct PlaylistResponse: Codable {
     /// 問い合わせ結果
-	var data: [Playlist]
+    var data: [Playlist]
 
     // MARK: -
 

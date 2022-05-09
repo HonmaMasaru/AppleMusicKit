@@ -11,7 +11,7 @@ import Foundation
 /// https://developer.apple.com/documentation/applemusicapi/personalrecommendationresponse
 struct RecommendationsResponse: Codable {
     /// 問い合わせ結果
-	let data: [Recommendation]
+    let data: [Recommendation]
 
     /// IDの取得
     var ids: [String] {
@@ -25,24 +25,24 @@ struct RecommendationsResponse: Codable {
 /// https://developer.apple.com/documentation/applemusicapi/personalrecommendation
 struct Recommendation: Codable {
     /// 関連項目
-	let relationships: Relationships
+    let relationships: Relationships
 
     /// 関連項目
     /// https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships
-	struct Relationships: Codable {
+    struct Relationships: Codable {
         /// コンテンツ
-		let contents: Contents?
+        let contents: Contents?
 
         /// レコメンド
-		let recommendations: Recommendations?
-	}
+        let recommendations: Recommendations?
+    }
 
     /// コンテンツ
     /// https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships/personalrecommendationcontentsrelationship
-	struct Contents: Codable {
+    struct Contents: Codable {
         /// リソース
-		let data: [Resource]
-	}
+        let data: [Resource]
+    }
 
     /// リソース
     /// https://developer.apple.com/documentation/applemusicapi/resource
@@ -55,10 +55,10 @@ struct Recommendation: Codable {
     }
 
     /// レコメンド
-	struct Recommendations: Codable {
+    struct Recommendations: Codable {
         /// レコメンド内容
-		let data: [Recommendation]
-	}
+        let data: [Recommendation]
+    }
 
     // MARK: -
 
