@@ -8,7 +8,7 @@
 import Foundation
 
 /// プレイリストのレスポンス
-/// https://developer.apple.com/documentation/applemusicapi/playlistsresponse
+/// - Note: [ChartResponse.Results.SongsChart | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/chartresponse/results/songschart)
 struct PlaylistResponse: Codable {
     /// 問い合わせ結果
     var data: [Playlist]
@@ -27,7 +27,7 @@ struct PlaylistResponse: Codable {
 // MARK: -
 
 /// プレイリスト
-/// https://developer.apple.com/documentation/applemusicapi/playlists-ulf
+/// - Note: [Playlists | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/playlists-ulf)
 struct Playlist: Codable {
     /// プレイリストID
     var id: String
@@ -36,14 +36,14 @@ struct Playlist: Codable {
     var relationships: Relationships
 
     /// 関連項目
-    /// https://developer.apple.com/documentation/applemusicapi/playlists/relationships
+    /// - Note: [Playlists.Relationships | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/playlists/relationships)
     struct Relationships: Codable {
         /// トラック
         var tracks: TrackRelationship
     }
 
     /// トラック
-    /// https://developer.apple.com/documentation/applemusicapi/playlists/relationships/playliststracksrelationship
+    /// - Note: [Playlists.Relationships.PlaylistsTracksRelationship | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/playlists/relationships/playliststracksrelationship)
     struct TrackRelationship: Codable {
         /// リソース
         /// - Note: 本来は[(Song | MusicVideo)]
@@ -51,7 +51,7 @@ struct Playlist: Codable {
     }
 
     /// リソース
-    /// https://developer.apple.com/documentation/applemusicapi/playlists/relationships/playliststracksrelationship
+    /// - Note: [Playlists.Relationships.PlaylistsTracksRelationship | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/playlists/relationships/playliststracksrelationship)
     struct Resource: Codable {
         var id: String
     }

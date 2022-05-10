@@ -8,7 +8,7 @@
 import Foundation
 
 /// 曲のレスポンス
-/// https://developer.apple.com/documentation/applemusicapi/songsresponse
+/// - Note: [SongsResponse | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/songsresponse)
 struct SongResponse: Codable {
     /// 問い合わせ結果
     let data: [Song]
@@ -24,7 +24,7 @@ struct SongResponse: Codable {
 // MARK: -
 
 /// 曲
-/// https://developer.apple.com/documentation/applemusicapi/songs-um8
+/// - Note: [Songs | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/songs-um8)
 public struct Song: Codable, Identifiable {
     /// ID
     public let id: String
@@ -33,7 +33,7 @@ public struct Song: Codable, Identifiable {
     public let attributes: Attributes
 
     /// 関連項目
-    /// https://developer.apple.com/documentation/applemusicapi/songs/attributes
+    /// - Note: [Songs.Attributes | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/songs/attributes)
     public struct Attributes: Codable {
         /// 曲名
         public let name: String
@@ -55,7 +55,7 @@ public struct Song: Codable, Identifiable {
     }
 
     /// アートワーク
-    /// https://developer.apple.com/documentation/applemusicapi/artwork
+    /// - Note: [Artwork | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/artwork)
     public struct Artwork: Codable {
         /// URL
         public let url: String
@@ -71,7 +71,7 @@ public struct Song: Codable, Identifiable {
     }
 
     /// プレビュー
-    /// https://developer.apple.com/documentation/applemusicapi/preview
+    /// - Note: [Preview | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/preview)
     public struct Preview: Codable {
         /// URL
         public let url: URL

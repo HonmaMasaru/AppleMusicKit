@@ -8,7 +8,7 @@
 import Foundation
 
 /// レーティングのレスポンス
-/// https://developer.apple.com/documentation/applemusicapi/ratingsresponse
+/// - Note: [RatingsResponse | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/ratingsresponse)
 struct RatingResponse: Codable {
     /// 問い合わせ結果
     let data: [Data]
@@ -20,7 +20,7 @@ struct RatingResponse: Codable {
     }
 
     /// 属性
-    /// https://developer.apple.com/documentation/applemusicapi/ratings/attributes
+    /// - Note: [Ratings.Attributes | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/ratings/attributes)
     struct Attributes: Codable {
         /// レーティング
         let value: Rating
@@ -30,7 +30,7 @@ struct RatingResponse: Codable {
 // MARK: -
 
 /// レーティング
-/// https://developer.apple.com/documentation/applemusicapi/ratings-ulo
+/// - Note: [Ratings | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/ratings-ulo)
 public enum Rating: Int, Codable {
     case like = 1
     case neutral = 0
