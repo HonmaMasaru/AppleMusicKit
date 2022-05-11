@@ -9,19 +9,18 @@
 import XCTest
 import AppleMusicKit
 
-@available(iOS 13.0.0, *)
 final class AppleMusicKitTests: XCTestCase {
     // デベロッパートークン
     private let developerToken = ""
 
-    // AppleMusicAPI
-    private var appleMusicAPI: AppleMusicAPI!
+    // AppleMusicKit
+    private var appleMusicKit: AppleMusicKit!
 
     // 曲ID
     private let songID = (success: "36954", fail: "abcde")
 
     override func setUp() {
-        appleMusicAPI = AppleMusicAPI(developerToken: developerToken, userToken: "", storefront: "jp")
+        appleMusicKit = AppleMusicKit(developerToken: developerToken, userToken: "", storefront: "jp")
     }
 
     // MARK: - 曲データの検索
@@ -30,7 +29,7 @@ final class AppleMusicKitTests: XCTestCase {
     func testSearchSongsSuccess() {
         Task {
             do {
-                let ids = try await appleMusicAPI.searchSongs(storeIDs: [songID.success])
+                let ids = try await appleMusicKit.searchSongs(storeIDs: [songID.success])
                 XCTAssertEqual(ids.first, songID.success)
             } catch {
                 XCTFail(error.localizedDescription)
@@ -42,7 +41,7 @@ final class AppleMusicKitTests: XCTestCase {
     func testSearchSongsFail() {
         Task {
             do {
-                let ids = try await appleMusicAPI.searchSongs(storeIDs: [songID.fail])
+                let ids = try await appleMusicKit.searchSongs(storeIDs: [songID.fail])
                 XCTFail(ids.first ?? "")
             } catch {
                 XCTAssertNotNil(error)
@@ -56,7 +55,7 @@ final class AppleMusicKitTests: XCTestCase {
     func testGetSongDataSuccess() {
         Task {
             do {
-                let song = try await appleMusicAPI.getSongData(storeID: songID.success)
+                let song = try await appleMusicKit.getSongData(storeID: songID.success)
                 XCTAssertEqual(song.id, self.songID.success)
             } catch {
                 XCTFail(error.localizedDescription)
@@ -68,7 +67,7 @@ final class AppleMusicKitTests: XCTestCase {
     func testGetSongDataFail() {
         Task {
             do {
-                let song = try await appleMusicAPI.getSongData(storeID: songID.fail)
+                let song = try await appleMusicKit.getSongData(storeID: songID.fail)
                 XCTFail(song.id)
             } catch {
                 XCTAssertNotNil(error)
@@ -81,7 +80,7 @@ final class AppleMusicKitTests: XCTestCase {
     func testGetAllStorefronts() {
         Task {
             do {
-                let storefronts = try await appleMusicAPI.getAllStorefronts()
+                let storefronts = try await appleMusicKit.getAllStorefronts()
                 XCTAssertTrue(storefronts.count > 0)
             } catch {
                 XCTFail(error.localizedDescription)
@@ -94,7 +93,7 @@ final class AppleMusicKitTests: XCTestCase {
     func testGetCharts() {
         Task {
             do {
-                let charts = try await appleMusicAPI.getCharts()
+                let charts = try await appleMusicKit.getCharts()
                 XCTAssertTrue(charts.count > 0)
             } catch {
                 XCTFail(error.localizedDescription)
