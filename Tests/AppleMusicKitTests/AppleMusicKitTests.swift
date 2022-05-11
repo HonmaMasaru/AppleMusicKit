@@ -9,6 +9,7 @@
 import XCTest
 import AppleMusicKit
 
+@available(iOS 13.0.0, *)
 final class AppleMusicKitTests: XCTestCase {
     // デベロッパートークン
     private let developerToken = ""

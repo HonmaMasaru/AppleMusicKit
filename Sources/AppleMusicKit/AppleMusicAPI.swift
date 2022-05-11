@@ -7,6 +7,7 @@
 
 import UIKit
 
+@available(iOS 13.0.0, *)
 public struct AppleMusicAPI {
     /// デベロッパートークン
     public let developerToken: String
@@ -254,6 +255,31 @@ public struct AppleMusicAPI {
         guard res.statusCode == 200 else { throw AppleMusicError.responseError(res.statusCode) }
         let playlists = try JSONDecoder().decode(PlaylistResponse.self, from: data)
         return playlists.ids
+    }
+}
+
+// MARK: -
+
+private extension URLSession {
+    @available(iOS 13.0.0, *)
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+        if #available(iOS 15, *) {
+            return try await URLSession.shared.data(for: request, delegate: nil)
+        } else {
+            return try await withCheckedThrowingContinuation { continuation in
+                URLSession.shared.dataTask(with: request) { data, response, error in
+                    guard error == nil else {
+                        continuation.resume(with: .failure(error!))
+                        return
+                    }
+                    guard data != nil, response != nil else {
+                        continuation.resume(with: .failure(URLError(.badServerResponse)))
+                        return
+                    }
+                    continuation.resume(with: .success((data!, response!)))
+                }.resume()
+            }
+        }
     }
 }
 
