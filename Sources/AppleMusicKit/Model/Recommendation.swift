@@ -69,7 +69,7 @@ struct Recommendation: Codable {
         return ids
     }
 
-    /// プレイリストから曲IDを取得
+    /// プレイリストからプレイリストIDを取得
     /// - Parameter contents: コンテンツ
     /// - Returns: プレイリストID (複数)
     private func get(playlistID contents: Contents?) -> [String] {
