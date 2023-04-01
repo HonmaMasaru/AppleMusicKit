@@ -1,5 +1,5 @@
 //
-//  Song.swift
+//  Songs.swift
 //  AppleMusicKit
 //
 //  Created by 本間 on 2020/05/03
@@ -11,7 +11,7 @@ import Foundation
 /// - Note: [SongsResponse | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/songsresponse)
 struct SongResponse: Codable {
     /// 問い合わせ結果
-    let data: [Song]
+    let data: [Songs]
 
     // MARK: -
 
@@ -25,7 +25,7 @@ struct SongResponse: Codable {
 
 /// 曲
 /// - Note: [Songs | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/songs-um8)
-public struct Song: Codable, Identifiable {
+public struct Songs: Codable, Identifiable {
     /// ID
     public let id: String
 
@@ -80,32 +80,32 @@ public struct Song: Codable, Identifiable {
 
 // MARK: -
 
-extension Song: Hashable {
-    public static func == (lhs: Song, rhs: Song) -> Bool {
+extension Songs: Hashable {
+    public static func == (lhs: Songs, rhs: Songs) -> Bool {
         lhs.id == rhs.id
     }
 }
 
 // MARK: -
 
-extension Song.Attributes: Hashable {
-    public static func == (lhs: Song.Attributes, rhs: Song.Attributes) -> Bool {
+extension Songs.Attributes: Hashable {
+    public static func == (lhs: Songs.Attributes, rhs: Songs.Attributes) -> Bool {
         lhs.url == rhs.url
     }
 }
 
 // MARK: -
 
-extension Song.Artwork: Hashable {
-    public static func == (lhs: Song.Artwork, rhs: Song.Artwork) -> Bool {
+extension Songs.Artwork: Hashable {
+    public static func == (lhs: Songs.Artwork, rhs: Songs.Artwork) -> Bool {
         lhs.url == rhs.url
     }
 }
 
 // MARK: -
 
-extension Song.Preview: Hashable {
-    public static func == (lhs: Song.Preview, rhs: Song.Preview) -> Bool {
+extension Songs.Preview: Hashable {
+    public static func == (lhs: Songs.Preview, rhs: Songs.Preview) -> Bool {
         lhs.url == rhs.url
     }
 }

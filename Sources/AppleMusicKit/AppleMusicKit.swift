@@ -60,7 +60,7 @@ public struct AppleMusicKit {
     /// - Parameters:
     ///   - storeIDs: 曲ID
     /// - Returns: 曲
-    public func getSongData(storeID: String) async throws -> Song {
+    public func getSongData(storeID: String) async throws -> Songs {
         guard let url = URL(string: "https://api.music.apple.com/v1/catalog/\(storefront)/songs/\(storeID)") else {
             throw URLError(.badURL)
         }
@@ -224,14 +224,14 @@ public struct AppleMusicKit {
     /// - Note: [Create a New Library Playlist | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/create_a_new_library_playlist)
     /// - Parameters:
     ///   - name: プレイリスト名
-    ///   - storeID: 曲ID (複数)
-    public func createNewPlaylist(name: String, storeIDs: [String]) async throws {
+    ///   - items: 曲ID (複数)
+    public func createPlaylist(name: String, items: [String]) async throws {
         guard !userToken.isEmpty else { throw AppleMusicError.noUserToken }
         guard let url = URL(string: "https://api.music.apple.com/v1/me/library/playlists") else {
             throw URLError(.badURL)
         }
-        let storeIDs = storeIDs.map { #"{"id":"\#($0)","type":"songs"}"# }.joined(separator: ",")
-        let body = #"{"attributes":{"name":"\#(name)"},"relationships":{"tracks":{"data":[\#(storeIDs)]}}}"#
+        let tracks = items.map { #"{"id":"\#($0)","type":"songs"}"# }.joined(separator: ",")
+        let body = #"{"attributes":{"name":"\#(name)"},"relationships":{"tracks":{"data":[\#(tracks)]}}}"#
         let request = URLRequest(url: url, method: .post, headers: headers, body: body.data(using: .utf8))
         let (_, response) = try await URLSession.shared.data(for: request)
         guard let res = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }

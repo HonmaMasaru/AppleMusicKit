@@ -39,7 +39,7 @@ struct Chart: Codable {
     let chart: String
 
     /// 曲のデータ
-    let data: [Song]
+    let data: [Songs]
 
     /// チャートデータのURL
     let href: String?
