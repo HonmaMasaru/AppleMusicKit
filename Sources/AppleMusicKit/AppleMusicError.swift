@@ -8,7 +8,7 @@
 import Foundation
 
 /// エラー
-public enum AppleMusicError: LocalizedError {
+public enum AppleMusicError {
     /// 不正なレスポンス
     case responseError(Int)
 
@@ -19,19 +19,21 @@ public enum AppleMusicError: LocalizedError {
     case notAutholized
 
     /// 曲が取得できない
-    case cantGetTheSong
+    case cantGetSong
 
     /// アートワークが取得できない
-    case cantGetTheArtwork
+    case cantGetArtwork
 
     /// レーティングの設定に失敗する
-    case failureToSetTheRating
+    case failureToSetRating
 
     /// 不明なエラー
     case unknown
+}
 
-    // MARK: -
+// MARK: -
 
+extension AppleMusicError: LocalizedError {
     /// エラーコメント
     public var errorDescription: String? {
         switch self {
@@ -41,11 +43,11 @@ public enum AppleMusicError: LocalizedError {
             return NSLocalizedString("Can't get token", comment: "")
         case .notAutholized:
             return NSLocalizedString("Not autholized", comment: "")
-        case .cantGetTheSong:
+        case .cantGetSong:
             return NSLocalizedString("Can't get song", comment: "")
-        case .cantGetTheArtwork:
+        case .cantGetArtwork:
             return NSLocalizedString("Can't get the artwork", comment: "")
-        case .failureToSetTheRating:
+        case .failureToSetRating:
             return NSLocalizedString("Failure to set the rating", comment: "")
         case .unknown:
             return NSLocalizedString("Unknown error", comment: "")

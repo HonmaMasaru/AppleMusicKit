@@ -12,56 +12,53 @@ import Foundation
 struct RecommendationsResponse: Codable {
     /// 問い合わせ結果
     let data: [Recommendation]
-
-    /// IDの取得
-    var ids: [String] {
-        data.reduce(into: [String]()) { $0 += $1.ids }
-    }
 }
 
 // MARK: -
 
 /// レコメンド
 /// - Note: [PersonalRecommendation | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendation)
-struct Recommendation: Codable {
+public struct Recommendation: Codable {
     /// 関連項目
-    let relationships: Relationships
+    public let relationships: Relationships
 
     /// 関連項目
     /// - Note: [PersonalRecommendation.Relationships | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships)
-    struct Relationships: Codable {
+    public struct Relationships: Codable {
         /// コンテンツ
-        let contents: Contents?
+        public let contents: Contents?
 
         /// レコメンド
-        let recommendations: Recommendations?
+        public let recommendations: Recommendations?
     }
 
     /// コンテンツ
     /// - Note: [PersonalRecommendation.Relationships.PersonalRecommendationContentsRelationship | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/personalrecommendation/relationships/personalrecommendationcontentsrelationship)
-    struct Contents: Codable {
+    public struct Contents: Codable {
         /// リソース
-        let data: [Resource]
+        public let data: [Resource]
     }
 
     /// リソース
     /// - Note: [Resource | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/resource)
-    struct Resource: Codable {
+    public struct Resource: Codable {
         /// ID
-        let id: String
+        public let id: String
 
         /// タイプ
-        let type: String
+        public let type: String
     }
 
     /// レコメンド
-    struct Recommendations: Codable {
+    public struct Recommendations: Codable {
         /// レコメンド内容
-        let data: [Recommendation]
+        public let data: [Recommendation]
     }
+}
 
-    // MARK: -
+// MARK: -
 
+extension Recommendation {
     /// IDの取得
     fileprivate var ids: [String] {
         var ids = get(playlistID: relationships.contents)

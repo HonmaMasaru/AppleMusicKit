@@ -12,13 +12,6 @@ import Foundation
 struct SongResponse: Codable {
     /// 問い合わせ結果
     let data: [Songs]
-
-    // MARK: -
-
-    /// IDの取得
-    var ids: [String] {
-        data.map { $0.id }
-    }
 }
 
 // MARK: -
@@ -54,22 +47,6 @@ public struct Songs: Codable, Identifiable {
         public let previews: [Preview]
     }
 
-    /// アートワーク
-    /// - Note: [Artwork | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/artwork)
-    public struct Artwork: Codable {
-        /// URL
-        public let url: String
-
-        /// 背景色
-        public let bgColor: String
-
-        /// 幅
-        public let width: Int
-
-        /// 高さ
-        public let height: Int
-    }
-
     /// プレビュー
     /// - Note: [Preview | Apple Developer Documentation](https://developer.apple.com/documentation/applemusicapi/preview)
     public struct Preview: Codable {
@@ -90,14 +67,6 @@ extension Songs: Hashable {
 
 extension Songs.Attributes: Hashable {
     public static func == (lhs: Songs.Attributes, rhs: Songs.Attributes) -> Bool {
-        lhs.url == rhs.url
-    }
-}
-
-// MARK: -
-
-extension Songs.Artwork: Hashable {
-    public static func == (lhs: Songs.Artwork, rhs: Songs.Artwork) -> Bool {
         lhs.url == rhs.url
     }
 }
